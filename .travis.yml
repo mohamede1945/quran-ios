@@ -1,0 +1,33 @@
+language: objective-c
+osx_image: xcode8.2
+env:
+  global:
+  - LC_CTYPE=en_US.UTF-8
+  - LANG=en_US.UTF-8
+  - WORKSPACE=GenericDataSource.xcworkspace
+  - IOS_FRAMEWORK_SCHEME="Quran"
+  - IOS_SDK=iphonesimulator10.2
+  - EXAMPLE_SCHEME="Example"
+  matrix:
+    - DESTINATION="OS=10.2,name=iPad Air"          SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"
+    - DESTINATION="OS=10.0,name=iPhone 6s Plus"    SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"
+    - DESTINATION="OS=9.0,name=iPhone 6"           SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"
+    - DESTINATION="OS=9.1,name=iPhone 4S"          SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"
+script:
+  - set -o pipefail
+  - xcodebuild -version
+  - xcodebuild -showsdks
+
+  # Build Framework in Release and Run Tests if specified
+  - if [ $RUN_TESTS == "YES" ]; then
+      xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Release ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test;
+    else
+      xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Release ONLY_ACTIVE_ARCH=NO build | xcpretty;
+    fi
+
+  # Build Framework in Debug and Run Tests if specified
+  - if [ $RUN_TESTS == "YES" ]; then
+        xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=$COVERAGE ENABLE_TESTABILITY=YES test;
+    else
+      xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
+    fi
