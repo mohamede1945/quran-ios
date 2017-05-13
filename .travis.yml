@@ -1,20 +1,20 @@
 language: objective-c
-osx_image: xcode8.3
+osx_image: xcode8.2
 env:
   global:
   - LC_CTYPE=en_US.UTF-8
   - LANG=en_US.UTF-8
   - WORKSPACE=Quran.xcworkspace
   - IOS_FRAMEWORK_SCHEME="Quran"
-  - IOS_SDK=iphonesimulator10.3
+  - IOS_SDK=iphonesimulator10.2
   - EXAMPLE_SCHEME="Example"
   matrix:
-    - DESTINATION="OS=10.3,name=iPad Air"          SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"
+    - DESTINATION="OS=10.2,name=iPad Air"          SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"
 
 script:
   - set -o pipefail
   - xcodebuild -version
   - xcodebuild -showsdks
-  - xcodebuild -workspace "Quran.xcworkspace" -scheme "Quran" -sdk "iphonesimulator10.3" -destination "OS=9.0,name=iPhone 6" -configuration Debug ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test
+  - xcodebuild -workspace "Quran.xcworkspace" -scheme "Quran" -sdk "iphonesimulator10.3" -destination "OS=9.0,name=iPhone 6" -configuration Debug ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty
   
 
